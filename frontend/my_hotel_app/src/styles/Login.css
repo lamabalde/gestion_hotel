@@ -1,0 +1,132 @@
+/* Fond et centrage complet */
+.login-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(to bottom right, #334155, #1e293b); /* slate-700 à slate-800 */
+  font-family: 'Geist', sans-serif;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* Carte blanche */
+.login-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 400px;
+  z-index: 1;
+}
+
+/* Logo */
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.triangle {
+  width: 20px;
+  height: 20px;
+  background: white;
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  transform: rotate(180deg);
+  margin-right: 0.5rem;
+}
+
+.logo-text {
+  font-weight: bold;
+  font-size: 1.25rem;
+  color: #1f2937; /* slate-800 */
+}
+
+/* Titre */
+.login-title {
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
+}
+
+/* Formulaire */
+.login-form .form-group {
+  margin-bottom: 1rem;
+}
+
+.login-form label {
+  display: block;
+  font-weight: 600;
+  color: #374151; /* gray-700 */
+  margin-bottom: 0.25rem;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db; /* gray-300 */
+  background: #f3f4f6; /* gray-100 */
+  outline: none;
+}
+
+.login-form input:focus {
+  border-color: #64748b; /* slate-400 */
+  box-shadow: 0 0 0 2px rgba(100, 116, 139, 0.5);
+}
+
+/* Options */
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.link-amber {
+  color: #f59e0b; /* amber-400 */
+  text-decoration: none;
+}
+
+.link-amber:hover {
+  text-decoration: underline;
+}
+
+/* Bouton */
+.btn-login {
+  width: 100%;
+  background-color: #1e293b; /* slate-800 */
+  color: white;
+  padding: 0.5rem 0;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  transition: background-color 0.3s;
+  cursor: pointer;
+}
+
+.btn-login:hover {
+  background-color: #111827; /* slate-900 */
+}
+
+/* Texte inscription */
+.register-text {
+  text-align: center;
+  margin-top: 1rem;
+  color: #6b7280; /* gray-500 */
+  font-size: 0.875rem;
+}
