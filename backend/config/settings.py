@@ -81,12 +81,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # ======================
 
 # Dev: SQLite
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
 
 # Prod: Render PostgreSQL
 DATABASE_URL = os.environ.get("DATABASE_URL")
