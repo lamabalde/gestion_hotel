@@ -3,9 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import "../styles/Register.css";
 
 export default function Register() {
-  const [name, setName] = useState("");
+  const [nom, setNom] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [motDePasse, setMotDePasse] = useState("");
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -20,16 +20,15 @@ export default function Register() {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/api/register/", {
+      const response = await fetch("https://gestion-hotel-zmkv.onrender.com/api/register/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ nom, email, mot_de_passe: motDePasse }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        // Redirige vers la page de connexion
         navigate("/login");
       } else {
         setError(data.detail || "Erreur lors de l'inscription");
@@ -55,8 +54,8 @@ export default function Register() {
             <input
               type="text"
               placeholder="Entrez votre nom..."
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={nom}
+              onChange={(e) => setNom(e.target.value)}
               required
             />
           </div>
@@ -77,8 +76,8 @@ export default function Register() {
             <input
               type="password"
               placeholder="Votre mot de passe..."
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={motDePasse}
+              onChange={(e) => setMotDePasse(e.target.value)}
               required
             />
           </div>

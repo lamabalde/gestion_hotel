@@ -4,7 +4,7 @@ import "../styles/Login.css";
 
 export default function Login() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [motDePasse, setMotDePasse] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -13,20 +13,17 @@ export default function Login() {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:8000/api/token/", {
+      const response = await fetch("https://gestion-hotel-zmkv.onrender.com/api/login/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, mot_de_passe: motDePasse }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        // Sauvegarde token dans localStorage
         localStorage.setItem("access", data.access);
-        localStorage.setItem("refresh", data.refresh);
-
-        // Redirige vers le dashboard
+        localStorage.setItem("user", JSON.stringify(data.user));
         navigate("/dashboard");
       } else {
         setError(data.detail || "Identifiants incorrects");
@@ -63,8 +60,8 @@ export default function Login() {
             <input
               type="password"
               placeholder="Votre mot de passe..."
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={motDePasse}
+              onChange={(e) => setMotDePasse(e.target.value)}
               required
             />
           </div>
