@@ -66,7 +66,8 @@ class LoginView(APIView):
             except User.DoesNotExist:
                 return Response({"error": "Email ou mot de passe incorrect"}, status=status.HTTP_400_BAD_REQUEST)
 
-            if not check_password(mot_de_passe, user.password):
+            # ✅ Utilisation de verify_password
+            if not user.verify_password(mot_de_passe):
                 return Response({"error": "Email ou mot de passe incorrect"}, status=status.HTTP_400_BAD_REQUEST)
 
             payload = {
@@ -90,6 +91,7 @@ class LoginView(APIView):
             })
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 # =============================
