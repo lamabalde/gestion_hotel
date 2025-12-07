@@ -104,20 +104,15 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # }
 
 # Prod: Render PostgreSQL
-DATABASES = {}
-DATABASE_URL = os.environ.get("DATABASE_URL")
 
-if DATABASE_URL:
-    # Prod: PostgreSQL sur Render
-    DATABASES["default"] = dj_database_url.parse("postgresql://hotel_db_70hj_user:C4HX1Ex39GQnuJzHojGnQkbAb8HlbSmx@dpg-d4ni70qdbo4c73fihog0-a.ohio-postgres.render.com/hotel_db_70hj")
-    
-else:
-    # Dev: SQLite
-    DATABASES["default"] = {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
 
+DATABASES = {
+    "default": dj_database_url.config(
+        default=os.environ.get("DATABASE_URL"),  # Render fournit automatiquement cette variable
+        conn_max_age=600,
+        ssl_require=True
+    )
+}
 # ======================
 # PASSWORD VALIDATION
 # ======================
