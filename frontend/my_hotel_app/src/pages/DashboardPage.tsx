@@ -29,7 +29,7 @@ const DashboardPage: React.FC = () => {
         }
 
         try {
-            const response = await fetch("https://gestion-hotel-1.onrender.com/api/hotels", {
+            const response = await fetch("https://lama-projet.onrender.com/api/hotels/", {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json",
