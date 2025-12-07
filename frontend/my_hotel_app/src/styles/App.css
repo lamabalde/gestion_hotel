@@ -1,0 +1,365 @@
+/* Reset de base pour un meilleur contrôle des styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f7f9; /* Arrière-plan général clair */
+}
+
+/* --- Layout Principal --- */
+.app-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* --- Sidebar (Navigation Latérale) --- */
+.sidebar {
+    width: 250px;
+    background-color: #333; /* Fond gris foncé */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar-header {
+    padding: 20px;
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: center;
+    border-bottom: 1px solid #444;
+}
+
+.sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-item {
+    padding: 15px 20px;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: background-color 0.3s, border-left 0.3s;
+}
+
+.nav-item:hover {
+    background-color: #444;
+}
+
+.nav-item.active {
+    background-color: #555;
+    border-left-color: #E35E5B; /* Rouge */
+    font-weight: bold;
+}
+
+.sidebar-footer {
+    padding: 20px;
+    margin-top: auto;
+    border-top: 1px solid #444;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #888;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+}
+
+.user-info p {
+    margin: 0;
+    font-size: 0.9em;
+}
+
+.user-info .status {
+    font-size: 0.7em;
+    color: #90EE90;
+}
+
+/* --- Contenu Principal --- */
+.main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-content-wrapper {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+/* --- Header (Top bar) --- */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-title {
+    font-size: 1.5em;
+    font-weight: 300;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px 10px;
+}
+
+.search-bar input {
+    border: none;
+    outline: none;
+    margin-left: 5px;
+    padding: 3px;
+}
+
+.user-icon {
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+/* ---------------------------------
+  DASHBOARD PAGE (Statistiques)
+--------------------------------- */
+.dashboard-content {
+    padding: 20px;
+}
+
+.welcome-section {
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.welcome-section .title {
+    font-size: 1.8em;
+    margin-bottom: 5px;
+    font-weight: 400;
+}
+
+.welcome-section .subtitle {
+    font-size: 0.9em;
+    color: #777;
+    margin: 0;
+}
+
+/* Grille des Statistiques */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+/* StatCard Styles */
+.stat-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.icon-container {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.stat-title {
+    font-size: 14px;
+    color: #333;
+}
+
+.stat-description {
+    font-size: 12px;
+    color: #777;
+    margin: 0;
+}
+
+/* ---------------------------------
+  HOTELS LIST PAGE
+--------------------------------- */
+.hotels-list-content {
+    padding: 20px;
+}
+
+.top-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.list-header .main-title {
+    font-size: 1.8em;
+    margin: 0;
+    font-weight: 300;
+}
+
+.list-header .count {
+    font-size: 1.1em;
+    color: #777;
+}
+
+.add-hotel-button {
+    background-color: #E35E5B;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    font-size: 1em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.2s;
+}
+
+.add-hotel-button:hover {
+    background-color: #c74b48;
+}
+
+.hotels-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.hotel-card {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.hotel-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.hotel-image-container {
+    height: 150px;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+}
+
+.hotel-info {
+    padding: 15px;
+}
+
+.hotel-location {
+    font-size: 0.8em;
+    color: #777;
+    margin-bottom: 5px;
+}
+
+.hotel-name {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #333;
+    margin: 0 0 10px;
+}
+
+.hotel-price {
+    font-size: 1em;
+    color: #E35E5B;
+    font-weight: bold;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .hotels-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 1024px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 850px) {
+    .hotels-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .stats-grid,
+    .hotels-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .app-layout {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+    }
+
+    .top-section {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+}
+
+/* Bouton Déconnexion */
+.logout-button {
+    background-color: #f4f4f4;
+    color: #555;
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.logout-button:hover {
+    background-color: #E35E5B;
+    color: white;
+    border-color: #E35E5B;
+}

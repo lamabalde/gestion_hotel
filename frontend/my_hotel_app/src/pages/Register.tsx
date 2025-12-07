@@ -3,40 +3,46 @@ import { Link, useNavigate } from "react-router-dom";
 import "../styles/Register.css";
 
 export default function Register() {
-  const [nom, setNom] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [motDePasse, setMotDePasse] = useState("");
+  const [password, setPassword] = useState("");
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
+ const handleRegister = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setError("");
 
-    if (!acceptTerms) {
-      setError("Vous devez accepter les termes et la politique.");
-      return;
+  if (!acceptTerms) {
+    setError("Vous devez accepter les termes et la politique.");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:8000/api/register/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nom: name,
+        email: email,
+        mot_de_passe: password
+      }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      // Redirige vers la page de connexion
+      navigate("/login");
+    } else {
+      setError(data.detail || "Erreur lors de l'inscription");
     }
+  } catch (err) {
+    setError("Erreur serveur, veuillez réessayer");
+  }
+};
 
-    try {
-      const response = await fetch("https://gestion-hotel-zmkv.onrender.com/api/register/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nom, email, mot_de_passe: motDePasse }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        navigate("/login");
-      } else {
-        setError(data.detail || "Erreur lors de l'inscription");
-      }
-    } catch (err) {
-      setError("Erreur serveur, veuillez réessayer");
-    }
-  };
 
   return (
     <div className="register-page">
@@ -54,8 +60,8 @@ export default function Register() {
             <input
               type="text"
               placeholder="Entrez votre nom..."
-              value={nom}
-              onChange={(e) => setNom(e.target.value)}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               required
             />
           </div>
@@ -76,8 +82,8 @@ export default function Register() {
             <input
               type="password"
               placeholder="Votre mot de passe..."
-              value={motDePasse}
-              onChange={(e) => setMotDePasse(e.target.value)}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>

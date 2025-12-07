@@ -4,7 +4,7 @@ import "../styles/Login.css";
 
 export default function Login() {
   const [email, setEmail] = useState("");
-  const [motDePasse, setMotDePasse] = useState("");
+  const [mot_de_passe, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -13,23 +13,32 @@ export default function Login() {
     setError("");
 
     try {
-      const response = await fetch("https://gestion-hotel-zmkv.onrender.com/api/login/", {
+      console.log(JSON.stringify({ email, mot_de_passe: mot_de_passe }));
+      const response = await fetch("http://localhost:8000/api/login/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, mot_de_passe: motDePasse }),
+        body: JSON.stringify({ email, password:mot_de_passe }), // 🔹 correspond au serializer
+        
+        
       });
 
       const data = await response.json();
 
       if (response.ok) {
+        // 🔹 Sauvegarde tokens JWT
         localStorage.setItem("access", data.access);
-        localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("refresh", data.refresh);
+
+        // Redirection vers le dashboard
         navigate("/dashboard");
       } else {
-        setError(data.detail || "Identifiants incorrects");
+        // Affiche le message d’erreur
+        setError(data.detail || data.error || "Identifiants incorrects");
+        console.log("Login error:", data);
       }
     } catch (err) {
-      setError("Erreur de connexion, veuillez réessayer");
+      setError("Erreur serveur, veuillez réessayer");
+      console.error(err);
     }
   };
 
@@ -60,8 +69,8 @@ export default function Login() {
             <input
               type="password"
               placeholder="Votre mot de passe..."
-              value={motDePasse}
-              onChange={(e) => setMotDePasse(e.target.value)}
+              value={mot_de_passe}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
