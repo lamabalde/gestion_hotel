@@ -15,11 +15,22 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # ======================
 # SECRET KEY & DEBUG
 # ======================
+AUTH_USER_MODEL = "api.User"
 
 SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key")
 DEBUG = os.environ.get("DEBUG", "True").lower() == "true"
 
 ALLOWED_HOSTS = ["*"]   # utile pour Render
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS",
+]
+
 
 # ======================
 # APPLICATIONS
@@ -39,6 +50,7 @@ INSTALLED_APPS = [
 
     # Ton application API
     'api',
+    "corsheaders",
 ]
 
 # ======================
@@ -46,6 +58,9 @@ INSTALLED_APPS = [
 # ======================
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
+
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',  # obligatoire pour Render
 
@@ -147,7 +162,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ======================
 
 REST_FRAMEWORK = {
-   "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.AllowAny",
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
     ],
 }

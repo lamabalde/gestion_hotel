@@ -1,155 +1,85 @@
-import jwt
-from datetime import datetime, timedelta
-from django.conf import settings
-from django.contrib.auth.hashers import check_password
+from rest_framework import generics, status
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
-from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.authentication import BaseAuthentication
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import User, Hotel
-from .serializers import UserRegisterSerializer, UserLoginSerializer, HotelSerializer
+from .serializers import UserRegisterSerializer, HotelSerializer
 
 
 # =============================
-# 🔹 JWT Authentication
+# 🔹 REGISTER
 # =============================
-class JWTAuthentication(BaseAuthentication):
-    def authenticate(self, request):
-        auth_header = request.headers.get('Authorization')
-        if not auth_header:
-            return None
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserRegisterSerializer
+    permission_classes = [AllowAny]
 
-        try:
-            token_type, token = auth_header.split(' ')
-            if token_type.lower() != 'bearer':
-                return None
-            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
-            user = User.objects.get(id=payload['id'])
-            return (user, None)
-        except (jwt.ExpiredSignatureError, jwt.DecodeError, User.DoesNotExist):
-            return None
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
 
+        refresh = RefreshToken.for_user(user)
 
-# =============================
-# 🔹 Register
-# =============================
-class RegisterView(APIView):
-    def post(self, request):
-        serializer = UserRegisterSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            return Response({
-                "message": "Utilisateur créé avec succès",
-                "user": {
-                    "id": user.id,
-                    "nom": user.nom,
-                    "email": user.email
-                }
-            }, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-# =============================
-# 🔹 Login + JWT
-# =============================
-class LoginView(APIView):
-    def post(self, request):
-        serializer = UserLoginSerializer(data=request.data)
-        if serializer.is_valid():
-            email = serializer.validated_data['email']
-            mot_de_passe = serializer.validated_data['mot_de_passe']
-
-            try:
-                user = User.objects.get(email=email)
-            except User.DoesNotExist:
-                return Response({"error": "Email ou mot de passe incorrect"}, status=status.HTTP_400_BAD_REQUEST)
-
-            # ✅ Utilisation de verify_password
-            if not user.verify_password(mot_de_passe):
-                return Response({"error": "Email ou mot de passe incorrect"}, status=status.HTTP_400_BAD_REQUEST)
-
-            payload = {
+        return Response({
+            "message": "Utilisateur créé avec succès",
+            "user": {
                 "id": user.id,
-                "email": user.email,
-                "exp": datetime.utcnow() + timedelta(hours=24)
+                "nom": user.nom,
+                "email": user.email
+            },
+            "tokens": {
+                "refresh": str(refresh),
+                "access": str(refresh.access_token)
             }
-
-            token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
-            if isinstance(token, bytes):
-                token = token.decode('utf-8')
-
-            return Response({
-                "message": "Connexion réussie",
-                "token": token,
-                "user": {
-                    "id": user.id,
-                    "nom": user.nom,
-                    "email": user.email
-                }
-            })
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+        }, status=status.HTTP_201_CREATED)
 
 
 # =============================
-# 🔹 Liste + Création Hôtels
+# 🔹 LOGIN (JWT fourni par SimpleJWT)
 # =============================
-class HotelListCreateView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+# SimpleJWT fournit déjà TokenObtainPairView pour login
+# Tu peux créer un alias pour personnaliser la réponse
 
-    def get(self, request):
-        hotels = Hotel.objects.all()
-        serializer = HotelSerializer(hotels, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+class LoginView(TokenObtainPairView):
+    permission_classes = [AllowAny]
 
-    def post(self, request):
-        serializer = HotelSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-# =============================
-# 🔹 Détail + Update + Delete Hôtels
-# =============================
-class HotelDetailView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def get_object(self, pk):
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        # Ajouter user info à la réponse
         try:
-            return Hotel.objects.get(pk=pk)
-        except Hotel.DoesNotExist:
-            return None
+            user = User.objects.get(email=request.data.get('email'))
+            data = response.data
+            data['user'] = {
+                "id": user.id,
+                "nom": user.nom,
+                "email": user.email
+            }
+            return Response(data)
+        except User.DoesNotExist:
+            return Response({"error": "Utilisateur introuvable"}, status=status.HTTP_400_BAD_REQUEST)
 
-    def get(self, request, pk):
-        hotel = self.get_object(pk)
-        if not hotel:
-            return Response({"error": "Hôtel introuvable"}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = HotelSerializer(hotel)
-        return Response(serializer.data)
+# =============================
+# 🔹 REFRESH TOKEN (SimpleJWT)
+# =============================
+class RefreshTokenView(TokenRefreshView):
+    permission_classes = [AllowAny]
 
-    def put(self, request, pk):
-        hotel = self.get_object(pk)
-        if not hotel:
-            return Response({"error": "Hôtel introuvable"}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = HotelSerializer(hotel, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# =============================
+# 🔹 CRUD HOTELS
+# =============================
+class HotelListCreateView(generics.ListCreateAPIView):
+    queryset = Hotel.objects.all()
+    serializer_class = HotelSerializer
+    permission_classes = [IsAuthenticated]
 
-    def delete(self, request, pk):
-        hotel = self.get_object(pk)
-        if not hotel:
-            return Response({"error": "Hôtel introuvable"}, status=status.HTTP_404_NOT_FOUND)
 
-        hotel.delete()
-        return Response({"message": "Hôtel supprimé"}, status=status.HTTP_204_NO_CONTENT)
+class HotelDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Hotel.objects.all()
+    serializer_class = HotelSerializer
+    permission_classes = [IsAuthenticated]
