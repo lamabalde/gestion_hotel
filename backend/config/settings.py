@@ -109,11 +109,8 @@ DATABASE_URL = os.environ.get("DATABASE_URL")
 
 if DATABASE_URL:
     # Prod: PostgreSQL sur Render
-    DATABASES["default"] = dj_database_url.config(
-        default=DATABASE_URL,
-        conn_max_age=600,
-        ssl_require=True
-    )
+    DATABASES["default"] = dj_database_url.parse("postgresql://hotel_db_70hj_user:C4HX1Ex39GQnuJzHojGnQkbAb8HlbSmx@dpg-d4ni70qdbo4c73fihog0-a.ohio-postgres.render.com/hotel_db_70hj")
+    
 else:
     # Dev: SQLite
     DATABASES["default"] = {
