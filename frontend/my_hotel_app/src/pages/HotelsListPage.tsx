@@ -27,7 +27,7 @@ const HotelsListPage: React.FC = () => {
         if (!token) { navigate("/login"); return; }
 
         try {
-            const response = await fetch("http://localhost:8000/api/hotels/", {
+            const response = await fetch("https://gestion-hotel-1.onrender.com/api/hotels/", {
                 headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
             });
             if (response.status === 401) { navigate("/login"); return; }
